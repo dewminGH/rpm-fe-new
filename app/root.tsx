@@ -1,5 +1,6 @@
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
 import "./app.css";
+import { Header } from "./components";
 
 export default function Root() {
   return (
@@ -11,6 +12,7 @@ export default function Root() {
         <Links />
       </head>
       <body className="min-h-screen bg-white dark:bg-gray-950">
+        <Header />
         <Outlet />
         <ScrollRestoration />
         <Scripts />

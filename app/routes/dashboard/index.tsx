@@ -28,7 +28,7 @@ const Dashboard = () => {
     labels: Array.from({ length: 24 }, (_, i) => `${i}:00`),
     datasets: [
       {
-        label: "Engine RPM",
+        label: "Fan RPM",
         data: Array.from(
           { length: 24 },
           () => Math.floor(Math.random() * 3000) + 1000
@@ -96,25 +96,12 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100">
-      {/* Header */}
-      <header className="bg-gray-800 p-4 shadow-md">
-        <div className="container mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-teal-400">Dashboard</h1>
-          <div className="flex items-center space-x-4">
-            <span className="text-gray-300">Admin</span>
-            <div className="w-10 h-10 rounded-full bg-teal-500 flex items-center justify-center">
-              <span className="font-bold">A</span>
-            </div>
-          </div>
-        </div>
-      </header>
-
       <main className="container mx-auto p-4">
         {/* RPM Graph Section */}
         <section className="mb-8">
           <div className="bg-gray-800 rounded-lg shadow-lg p-6">
             <h2 className="text-xl font-semibold mb-4 text-gray-200">
-              Engine RPM Over Time
+              Fan RPM Over Time
             </h2>
             <div className="h-80">
               <Line data={rpmData} options={options} />
