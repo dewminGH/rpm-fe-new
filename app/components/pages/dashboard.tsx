@@ -9,12 +9,13 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { Button, LottieAnimator } from "../../components";
 import { useGetRpmDataFromSocket } from "~/hooks";
 import { graph_options } from "~/constants/raw-objects";
 import ConnectingJSON from "../../animations/connecting.json";
 import { ServerIcon, CpuChipIcon, SignalIcon } from "@heroicons/react/24/solid";
+import { useNavigate } from "react-router";
 
 // Register ChartJS components
 ChartJS.register(
@@ -28,12 +29,19 @@ ChartJS.register(
 );
 
 const DashboardRPMHome = () => {
+  const navigate = useNavigate();
   const { isConnected, piLiveData, setTrigger, socketData, isDeviceConnected } =
     useGetRpmDataFromSocket();
 
   const handleReconnect = () => {
     setTrigger(true);
   };
+
+  useEffect(() => {
+    if (!localStorage.getItem("token")) {
+      navigate("/");
+    }
+  }, [navigate]);
 
   const rpmData = {
     labels: socketData.map(({ temperature }) => temperature),
@@ -107,6 +115,10 @@ const DashboardRPMHome = () => {
     ],
     [piLiveData]
   );
+
+  if (!localStorage.getItem("token")) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100">
