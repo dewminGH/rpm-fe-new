@@ -15,6 +15,7 @@ type LoginResponse = {
     user_name: string;
     device_sc: string;
   } | null;
+  user_id?: string;
 };
 
 const useLogin = () => {
@@ -35,6 +36,8 @@ const useLogin = () => {
       if (res.data.access_token) {
         localStorage.setItem("token", res.data.access_token);
         localStorage.setItem("username", res.data.data?.user_name ?? "");
+        localStorage.setItem("dsc", res.data.data?.device_sc ?? "");
+        localStorage.setItem("u-id", res.data?.user_id ?? "");
         navigate("/dashboard");
       }
 

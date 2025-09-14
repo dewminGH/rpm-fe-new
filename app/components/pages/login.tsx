@@ -13,6 +13,10 @@ const Login = () => {
   });
 
   useEffect(() => {
+    console.log(formData);
+  }, [formData]);
+
+  useEffect(() => {
     localStorage.clear();
   }, []);
 

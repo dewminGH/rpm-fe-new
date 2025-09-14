@@ -27,3 +27,11 @@ export const graph_options = {
     },
   },
 };
+
+export const CONTAINER_TYPES = [
+  "apple",
+  "banana",
+  "mango",
+  "papaya",
+  "watermelon",
+] as const;

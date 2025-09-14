@@ -23,18 +23,15 @@ const useGetRpmDataFromSocket = () => {
       console.log("rpm-sync-value", socketData);
       setSocketData(socketData.lastTenRecords);
       setPiLiveData(socketData.latest);
-      // setSocketData((prev) => [...prev, value]);
     }
 
     // attach listeners
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
-    socket.on("rpm-sync", onRpmSync); // <-- match your server emit
+    socket.on("rpm-sync", onRpmSync);
 
-    // connect after listeners are ready
     if (!socket.connected) socket.connect();
 
-    // if already connected (HMR, fast refresh), run handler once
     if (socket.connected) onConnect();
 
     setTrigger(false);

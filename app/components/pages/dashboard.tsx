@@ -9,13 +9,14 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button, LottieAnimator } from "../../components";
-import { useGetRpmDataFromSocket } from "~/hooks";
-import { graph_options } from "~/constants/raw-objects";
+import { useGetRpmDataFromSocket, useUpdateContainerType } from "~/hooks";
+import { CONTAINER_TYPES, graph_options } from "~/constants/raw-objects";
 import ConnectingJSON from "../../animations/connecting.json";
 import { ServerIcon, CpuChipIcon, SignalIcon } from "@heroicons/react/24/solid";
 import { useNavigate } from "react-router";
+import clsx from "clsx";
 
 // Register ChartJS components
 ChartJS.register(
@@ -30,6 +31,9 @@ ChartJS.register(
 
 const DashboardRPMHome = () => {
   const navigate = useNavigate();
+  const { callUpdateContainerType } = useUpdateContainerType();
+  const [updateContainerType, setUpdateContainerType] =
+    useState<string>("apple");
   const { isConnected, piLiveData, setTrigger, socketData, isDeviceConnected } =
     useGetRpmDataFromSocket();
 
@@ -37,11 +41,25 @@ const DashboardRPMHome = () => {
     setTrigger(true);
   };
 
+  const handleUpdateContainerType = async (cn_type: string) => {
+    await callUpdateContainerType({
+      container_type: cn_type,
+      user_id: parseInt(localStorage.getItem("u-id") ?? "-1"),
+    });
+  };
+
   useEffect(() => {
     if (!localStorage.getItem("token")) {
       navigate("/");
     }
   }, [navigate]);
+
+  useEffect(() => {
+    if (updateContainerType) {
+      handleUpdateContainerType(updateContainerType);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [updateContainerType]);
 
   const rpmData = {
     labels: socketData.map(({ temperature }) => temperature),
@@ -123,6 +141,39 @@ const DashboardRPMHome = () => {
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100">
       <main className="container mx-auto p-4">
+        <div className="flex justify-end">
+          <div className="w-full sm:w-[300px] mb-8">
+            {/* Container Type (Dropdown) */}
+            <div>
+              <label
+                htmlFor="containerType"
+                className="block text-gray-400 text-sm font-medium mb-1"
+              >
+                Container Type
+              </label>
+              <select
+                defaultValue={"apple"}
+                id="containerType"
+                value={updateContainerType}
+                onChange={({ target: { value } }) =>
+                  setUpdateContainerType(value)
+                }
+                className={clsx(
+                  "w-full px-4 py-2 rounded-lg bg-gray-700 text-gray-100 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-400"
+                )}
+              >
+                <option value="" disabled>
+                  Select a container…
+                </option>
+                {CONTAINER_TYPES.map((ct) => (
+                  <option key={ct} value={ct}>
+                    {ct}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
         {/* RPM Graph Section */}
         {isConnected && isDeviceConnected ? (
           <section className="mb-8">
